@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <math.h>
 
 #define SZ 256000
 
@@ -12,8 +14,13 @@ typedef struct heap* pheap;
 
 //AUXILIARY FUNCTIONS
 
-void initialize_heap (pheap h){
-    h->last = 0;
+void initialize_heap (pheap *h){
+    *h = malloc(sizeof(struct heap));
+    if(*h == NULL){
+        printf("Error: Not enough space in memory\n");
+        return;
+    }
+    (*h)->last = 0;
 }
 
 bool is_empty_heap (pheap h){
@@ -21,7 +28,7 @@ bool is_empty_heap (pheap h){
 }
 
 void percolate_up(pheap h, int i) {
-    while (i > 1 && h->vector[i/2 -1] < h->vector[i-1]) {  
+    while (i > 1 && h->vector[i/2 -1] > h->vector[i-1]) {  
         int temp = h->vector[i/2 -1];
         h->vector[i/2 -1] = h->vector[i-1];
         h->vector[i-1] = temp;
@@ -45,10 +52,10 @@ void percolate_down(pheap h, int i) {
         left_child = 2*i;
         right_child = 2*i+1;
         j = i;
-        if (right_child <= h->last && h->vector[right_child-1] > h->vector[i-1]) {
+        if (right_child <= h->last && h->vector[right_child-1] < h->vector[i-1]) {
             i = right_child;
         }
-        if (left_child <= h->last && h->vector[left_child-1] > h->vector[i-1]) {
+        if (left_child <= h->last && h->vector[left_child-1] < h->vector[i-1]) {
             i = left_child;
         }
         int temp = h->vector[j-1];
@@ -66,7 +73,6 @@ void create_heap(int a [], int n, pheap h){
     }
 
     int i;
-    initialize_heap(h);
     for(i = 0; i < n; i++){
         insert(a[i], h);
     }
@@ -87,25 +93,54 @@ int remove_min(pheap h) {
 
 //TEST HEAP
 
-void print_heap(struct heap h){
-    int i, levelpos = 0, levelend = 1;
-    
-    for(i = 0; i < h.last-1; i++, levelpos++){
-        printf("%d  ", h.vector[i]);
-        
-        if(levelpos == levelend){
+void print_heap(struct heap h) {
+    int i, level = 0, levelCount = 1;
+    for (i = 0; i < h.last; i++) {
+        printf("%2d ", h.vector[i]);
+        if (i == levelCount - 1) {
             printf("\n");
-            levelend *= 2;
-            levelpos = 0;
+            level++;
+            levelCount += pow(2, level);
         }
     }
+    printf("\n\n");
+}
+
+bool check_heap(struct heap h){
+    int i;
+    for(i = 0; i < h.last; i++){
+        if(2*i+1 <= h.last && h.vector[i] > h.vector[2*i+1]) return false;
+
+        if(2*i+2 <= h.last && h.vector[i] > h.vector[2*i+2]) return false;
+    }
+    return true;
 }
 
 void test_heap(){
     pheap h;
-    int testvec[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    create_heap(testvec, 10, h);
+
+    int testvec1[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int testvec2[10] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    int testvec3[10] = {8, 2, 3, 9, 1, 4, 10, 5, 6, 7};
+
+    initialize_heap(&h);
+    create_heap(testvec1, 10, h);
     print_heap(*h);
+    printf("Is OK? %d\n",check_heap(*h));
+
+    initialize_heap(&h);
+    create_heap(testvec2, 10, h);
+    print_heap(*h);
+    printf("Is OK? %d\n",check_heap(*h));
+
+    initialize_heap(&h);
+    create_heap(testvec3, 10, h);
+    print_heap(*h);
+    printf("Is OK? %d\n",check_heap(*h));
+
+    remove_min(h);
+    print_heap(*h);
+    printf("Is OK? %d\n",check_heap(*h));
 }
 
 int main(){
