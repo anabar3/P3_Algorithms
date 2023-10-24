@@ -1,5 +1,9 @@
 #include <stdio.h>
+#include <time.h>
+#include <sys/time.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <math.h>
 
 #define SZ 256000
 
@@ -108,8 +112,108 @@ void test_heap(){
     print_heap(*h);
 }
 
+
+
+
+//CHECK IF create heap IS O(n)
+
+
+
+
+
+//ARRAYS FOR TESTS AND FUNCTIONS FOR MEASUREMENTS
+void init_seed() {
+    srand(time(NULL));
+/* set the seed of a new sequence of pseudo-random integers */
+}
+
+void print_array(int v[], int n){
+    int i;
+    for (i=0; i<n; i++){
+        printf("%3d ", v[i]);
+    }
+}
+
+double microseconds() { /* obtains the system time in microseconds */
+    struct timeval t;
+    if (gettimeofday(&t, NULL) < 0 )
+    return 0.0;
+    return (t.tv_usec + t.tv_sec * 1000000.0);
+}
+
+void copyArray(int source[], int dest[], int size) {
+    int i;
+    for (i = 0; i < size; i++) {
+        dest[i] = source[i];
+    }
+}
+
+bool is_sorted (int v[], int n){
+    int i;
+    for (i=0; i<n-1;i++){
+        if (v[i]>v[i+1]) return false;
+    }
+    return true;
+}
+
+
+//HEAP SORT IMPLEMENTATION
+void Heapsort (int a[], int n){
+    int i;
+    pheap h;
+    create_heap (a, n, h);
+    for (i=0; i<n; i++) a[i] = remove_min (h);
+}
+
+//RANDOM INITIALIZATIONS
+void random_init(int v [], int n) {
+    int i, m=2*n+1;
+    for (i=0; i < n; i++)
+    v[i] = (rand() % m) - n;
+    /* generate pseudo-random numbers between -n and +n */
+}
+
+void sorted_init(int v[], int n){
+    random_init(v, n);
+    Heapsort(v, n);
+}
+
+void inverse_init(int v[], int n){
+    sorted_init(v, n);
+    int i, j, temp;
+    for (i = 0, j = n-1; i < j; i++, j--) {
+        temp = v[i];
+        v[i] = v[j];
+        v[j] = temp;
+    }
+}
+
+//TEST HEAPSORT
+void test_heapsort(){
+    int size= 10;
+    int v[size], w[size];
+    printf("\n===============================\n");
+    printf("\n\nCheck algorithm:\n");
+
+    printf("\n\nRandom initialization:\n");
+    random_init(v, size);
+    copyArray(v, w, size);
+    print_array(v, size);
+    printf("\nIs sorted? %d\n", is_sorted(v, size));
+
+    printf("\nHeap Sort\n");
+    Heapsort(w, size);
+    print_array(w, size);
+    printf("\nIs sorted? %d\n", is_sorted(w, size));
+    
+}
+
+
+
+
 int main(){
     test_heap();
+    test_heapsort();
     return 0;
 }
 
