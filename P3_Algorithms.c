@@ -105,15 +105,15 @@ void print_heap(struct heap h) {
             levelCount += pow(2, level);
         }
     }
-    printf("\n\n");
+    printf("\n");
 }
 
 bool check_heap(struct heap h){
     int i;
     for(i = 0; i < h.last; i++){
-        if(2*i+1 <= h.last && h.vector[i] > h.vector[2*i+1]) return false;
+        if(2*i+1 < h.last && h.vector[i] > h.vector[2*i+1]) return false;
 
-        if(2*i+2 <= h.last && h.vector[i] > h.vector[2*i+2]) return false;
+        if(2*i+2 < h.last && h.vector[i] > h.vector[2*i+2]) return false;
     }
     return true;
 }
@@ -125,24 +125,43 @@ void test_heap(){
     int testvec2[10] = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
     int testvec3[10] = {8, 2, 3, 9, 1, 4, 10, 5, 6, 7};
 
+    printf("=============================\n\n1. HEAP STRUCTURE TEST:\n\n");
+
+    printf("Create heap with ascending vector:\n");
     initialize_heap(&h);
     create_heap(testvec1, 10, h);
     print_heap(*h);
-    printf("Is OK? %d\n",check_heap(*h));
+    printf("Is OK? %d\n\n",check_heap(*h));
 
+    printf("Create heap with descending vector:\n");
     initialize_heap(&h);
     create_heap(testvec2, 10, h);
     print_heap(*h);
-    printf("Is OK? %d\n",check_heap(*h));
+    printf("Is OK? %d\n\n",check_heap(*h));
 
+    printf("Create heap with random vector:\n");
     initialize_heap(&h);
     create_heap(testvec3, 10, h);
     print_heap(*h);
-    printf("Is OK? %d\n",check_heap(*h));
+    printf("Is OK? %d\n\n",check_heap(*h));
 
+    printf("Remove min:\n");
     remove_min(h);
     print_heap(*h);
-    printf("Is OK? %d\n",check_heap(*h));
+    printf("Is OK? %d\n\n",check_heap(*h));
+
+    printf("Remove min (x3):\n");
+    for(int i = 0; i < 3; i++){
+        remove_min(h);
+    }
+    print_heap(*h);
+    printf("Is OK? %d\n\n",check_heap(*h));
+
+    printf("Remove min (x7):\n");
+    for(int i = 0; i < 7; i++){
+        remove_min(h);
+    }
+    printf("Is OK? %d\n\n",check_heap(*h));
 }
 
 
@@ -194,8 +213,9 @@ bool is_sorted (int v[], int n){
 void Heapsort (int a[], int n){
     int i;
     pheap h;
+    initialize_heap(&h);
     create_heap (a, n, h);
-    for (i=0; i<n; i++) a[i] = remove_min (h);
+    for (i=0; i<n; i++) a[i] = remove_min(h);
 }
 
 //RANDOM INITIALIZATIONS
@@ -224,21 +244,39 @@ void inverse_init(int v[], int n){
 //TEST HEAPSORT
 void test_heapsort(){
     int size= 10;
-    int v[size], w[size];
-    printf("\n===============================\n");
-    printf("\n\nCheck algorithm:\n");
+    int v[size];
+    printf("===============================\n\n");
+    printf("2. HEAPSORT TEST:\n");
 
-    printf("\n\nRandom initialization:\n");
+    printf("\nRandom initialization:\n");
     random_init(v, size);
-    copyArray(v, w, size);
     print_array(v, size);
     printf("\nIs sorted? %d\n", is_sorted(v, size));
 
     printf("\nHeap Sort\n");
-    Heapsort(w, size);
-    print_array(w, size);
-    printf("\nIs sorted? %d\n", is_sorted(w, size));
-    
+    Heapsort(v, size);
+    print_array(v, size);
+    printf("\nIs sorted? %d\n", is_sorted(v, size));
+
+    printf("\nAscending order initialization:\n");
+    sorted_init(v, size);
+    print_array(v, size);
+    printf("\nIs sorted? %d\n", is_sorted(v, size));
+
+    printf("\nHeap Sort\n");
+    Heapsort(v, size);
+    print_array(v, size);
+    printf("\nIs sorted? %d\n", is_sorted(v, size));
+
+    printf("\nDescending order initialization:\n");
+    inverse_init(v, size);
+    print_array(v, size);
+    printf("\nIs sorted? %d\n", is_sorted(v, size));
+
+    printf("\nHeap Sort\n");
+    Heapsort(v, size);
+    print_array(v, size);
+    printf("\nIs sorted? %d\n", is_sorted(v, size));
 }
 
 
