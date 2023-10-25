@@ -25,6 +25,10 @@ void initialize_heap (pheap *h){
     (*h)->last = 0;
 }
 
+void delete_heap(pheap *h){
+    free(*h);
+}
+
 bool is_empty_heap (pheap h){
     return h->last==0;
 }
@@ -73,7 +77,7 @@ void create_heap(int a [], int n, pheap h){
         printf("Error: array size is too large\n");
         return;
     }
-
+    h->last = 0;
     int i;
     for(i = 0; i < n; i++){
         insert(a[i], h);
@@ -165,12 +169,15 @@ void test_heap(){
 }
 
 
-
-
-//CHECK IF create heap IS O(n)
-
-
-
+//HEAP SORT IMPLEMENTATION
+void Heapsort (int a[], int n){
+    int i;
+    pheap h;
+    initialize_heap(&h);
+    create_heap (a, n, h);
+    for (i=0; i<n; i++) a[i] = remove_min(h);
+    delete_heap(&h);
+}
 
 
 //ARRAYS FOR TESTS AND FUNCTIONS FOR MEASUREMENTS
@@ -208,16 +215,6 @@ bool is_sorted (int v[], int n){
     return true;
 }
 
-
-//HEAP SORT IMPLEMENTATION
-void Heapsort (int a[], int n){
-    int i;
-    pheap h;
-    initialize_heap(&h);
-    create_heap (a, n, h);
-    for (i=0; i<n; i++) a[i] = remove_min(h);
-}
-
 //RANDOM INITIALIZATIONS
 void random_init(int v [], int n) {
     int i, m=2*n+1;
@@ -240,6 +237,102 @@ void inverse_init(int v[], int n){
         v[j] = temp;
     }
 }
+
+
+double calculateTime(int testArray[], int size, void (*sortingAlg)(int v[], int n)){
+    double t1, t2, difference;
+    int copyofTest[size];
+    copyArray(testArray, copyofTest, size);
+
+    t1 = microseconds(); //start measure
+    sortingAlg(testArray, size);
+    t2 = microseconds(); //stop measure
+    
+    difference = t2 - t1;;
+    if(difference >= 500){ //big times
+        return difference;
+    }
+    else{ //small times
+        double copyTime;
+        int k;
+
+        //measure copy time
+        t1 = microseconds();
+        for(k = 0; k < 1000; k++){ //repeat 1000 times
+            copyArray(copyofTest, testArray, size);
+        }
+        t2 = microseconds();
+        copyTime = t2 - t1;
+
+        //measure sorting and substracting copy time
+        t1 = microseconds(); //start measure
+        for(k = 0; k < 1000; k++){ //repeat 1000 times
+            copyArray(copyofTest, testArray, size);
+            sortingAlg(testArray, size);
+        }
+        t2 = microseconds(); //stop measure
+
+        return (t2-t1-copyTime)/1000;
+    }
+}
+
+//CHECK IF create heap IS O(n)
+void heapCreationTime(int rep) {
+    printf("=============================\n\n1. HEAP CREATION COMPLEXITY TEST:\n\n");
+    printf("Execution times in microseconds\nRepetitions: %d\n", rep);
+
+    int sizes[10] = {500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000};
+    double totalTime, meandivdiff = 0, t1, t2;
+    int i, j, k, n;
+    char asterisk;
+    pheap h;
+    initialize_heap(&h);
+    
+    //PRINT HEADER
+    printf("\nHEAP CREATION:\n");
+    printf("%7s%17s%20s%15s%15s\n", "Size", "t(n)", "t(n)/n^0.8", "t(n)/n", "t(n)/n^1.2");
+        
+    //MAKE MEASUREMENTS
+    for (i=0; i<10; i++) { //iterate through the different sizes
+        n = sizes[i];
+        int testArray[n];
+        totalTime = 0;
+
+        for(j = 0; j < rep; j++){ //make the given repetitions
+            random_init(testArray, n);
+
+            t1 = microseconds(); //start measure
+            create_heap(testArray, n, h);
+            t2 = microseconds(); //stop measure
+            
+            if(t2 - t1 >= 500){ //big times
+                totalTime += t2 - t1;
+            }
+            else{ //small times
+                t1 = microseconds(); //start measure
+                for(k = 0; k < 500; k++){ //repeat 1000 times
+                    create_heap(testArray, n, h);
+                }
+                t2 = microseconds(); //stop measure
+
+                totalTime += (t2-t1)/500;
+            }
+        }
+        totalTime /= rep;
+
+        //PRINT ROW
+        if(totalTime < 500){
+            asterisk = '*';
+        }else{
+            asterisk = ' ';
+        }
+        printf("%c  %-6d%15.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/(pow(n,0.8)), totalTime/n, totalTime/(pow(n,1.2)));
+        meandivdiff += totalTime/n;
+    }
+    //Print average
+    printf("%59.6lf\n", meandivdiff/10);
+}
+
 
 //TEST HEAPSORT
 void test_heapsort(){
@@ -284,6 +377,7 @@ void test_heapsort(){
 
 int main(){
     test_heap();
+    heapCreationTime(100);
     test_heapsort();
     return 0;
 }
