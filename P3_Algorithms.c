@@ -372,13 +372,100 @@ void test_heapsort(){
     printf("\nIs sorted? %d\n", is_sorted(v, size));
 }
 
+void print_header(int a){
+    switch(a){
+        case 0:
+            printf("\nRANDOM INITALIZATION:\n");
+            printf("%8s%16s%20s%17s%13s\n", "Size", "t(n)", "t(n)/n", "t(n)/n*log(n)", "t(n)/n^2");
+        break;
+        case 1:
+            printf("\nASCENDING ORDER INITIALIZATION\n");
+            printf("%8s%16s%20s%17s%13s\n", "Size", "t(n)", "t(n)/n", "t(n)/n*log(n)", "t(n)/n^2");
+        break;
+        case 2:
+            printf("\nDESCENDING ORDER INITIALIZATION:\n");
+            printf("%8s%16s%20s%17s%13s\n", "Size", "t(n)", "t(n)/n", "t(n)/n*log(n)", "t(n)/n^2");
+        break;
+    }
+}
+
+void print_row(int a, double totalTime, int n, double *meandivdiff){
+    char asterisk;
+    if(totalTime >= 500){
+        asterisk = ' ';
+    }
+    else{
+        asterisk = '*';
+    }
+    
+    if(a == 0){
+        //nlog(n)
+        printf("%c   %-5d%15.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/n, totalTime/(n*log(n)), totalTime/(pow(n,2)));
+        *meandivdiff += totalTime/(n*log(n));
+    }else if(a == 1){
+        //nlog(n)
+        printf("%c   %-5d%15.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/n, totalTime/(n*log(n)), totalTime/(pow(n,2)));
+        *meandivdiff += totalTime/(n*log(n));
+    }else{
+        //nlog(n)
+        printf("%c   %-5d%15.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/n, totalTime/(n*log(n)), totalTime/(pow(n,2)));
+        *meandivdiff += totalTime/(n*log(n));
+    }
+}
+
+
+void test_complexity_heapsort(int rep) {
+    int sizes[10] = {500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000};
+    printf("===============================\n\n");
+    printf("Execution times in microseconds\nRepetitions: %d\n", rep);
+
+    double totalTime, meandivdiff;
+    int a, i, j, n;
+
+    //3 DIFFERENT TABLES
+    for(a = 0; a < 3; a++){
+        meandivdiff = 0;
+        
+        //PRINT HEADER
+        print_header(a);
+            
+        //MAKE MEASUREMENTS
+        for (i=0; i<10; i++) { //iterate through the different sizes
+            n = sizes[i];
+            int testArray[n];
+            totalTime = 0;
+
+            for(j = 0; j < rep; j++){ //make the given repetitions
+                
+                if(a == 0){
+                    random_init(testArray, n);
+                }
+                else if(a == 1){
+                    sorted_init(testArray, n);
+                }
+                else{
+                    inverse_init(testArray, n);
+                }
+                totalTime += calculateTime(testArray, n, Heapsort);
+            }
+            totalTime /= rep;
+
+            //PRINT ROW
+            print_row(a, totalTime, n, &meandivdiff);
+        }
+        //Print average
+        printf("%59.6lf\n", meandivdiff/10);
+    }
+}
+
 
 
 
 int main(){
     test_heap();
-    heapCreationTime(100);
+    //heapCreationTime(100);
     test_heapsort();
+    test_complexity_heapsort(100);
     return 0;
 }
 
