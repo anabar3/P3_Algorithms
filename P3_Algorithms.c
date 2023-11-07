@@ -278,7 +278,7 @@ double calculateTime(int testArray[], int size, void (*sortingAlg)(int v[], int 
 
 //CHECK IF create heap IS O(n)
 void heapCreationTime(int rep) {
-    printf("=============================\n\n1. HEAP CREATION COMPLEXITY TEST:\n\n");
+    printf("=============================\n\n2. HEAP CREATION COMPLEXITY TEST:\n\n");
     printf("Execution times in microseconds\nRepetitions: %d\n", rep);
 
     int sizes[10] = {500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000};
@@ -290,7 +290,7 @@ void heapCreationTime(int rep) {
     
     //PRINT HEADER
     printf("\nHEAP CREATION:\n");
-    printf("%7s%17s%20s%15s%15s\n", "Size", "t(n)", "t(n)/n^0.8", "t(n)/n", "t(n)/n^1.2");
+    printf("%9s%16s%21s%13s%17s\n", "Size", "t(n)", "t(n)/n^0.8", "t(n)/n", "t(n)/n^1.2");
         
     //MAKE MEASUREMENTS
     for (i=0; i<10; i++) { //iterate through the different sizes
@@ -326,11 +326,11 @@ void heapCreationTime(int rep) {
         }else{
             asterisk = ' ';
         }
-        printf("%c  %-6d%15.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/(pow(n,0.8)), totalTime/n, totalTime/(pow(n,1.2)));
+        printf("%c  %6d%16.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/(pow(n,0.8)), totalTime/n, totalTime/(pow(n,1.2)));
         meandivdiff += totalTime/n;
     }
     //Print average
-    printf("%59.6lf\n", meandivdiff/10);
+    printf("%60.6lf\n", meandivdiff/10);
 }
 
 
@@ -339,7 +339,7 @@ void test_heapsort(){
     int size= 10;
     int v[size];
     printf("===============================\n\n");
-    printf("2. HEAPSORT TEST:\n");
+    printf("3. HEAPSORT TEST:\n");
 
     printf("\nRandom initialization:\n");
     random_init(v, size);
@@ -376,15 +376,15 @@ void print_header(int a){
     switch(a){
         case 0:
             printf("\nRANDOM INITALIZATION:\n");
-            printf("%8s%16s%20s%17s%13s\n", "Size", "t(n)", "t(n)/n", "t(n)/n*log(n)", "t(n)/n^2");
+            printf("%9s%16s%19s%18s%13s\n", "Size", "t(n)", "t(n)/n", "t(n)/n*log(n)", "t(n)/n^2");
         break;
         case 1:
             printf("\nASCENDING ORDER INITIALIZATION\n");
-            printf("%8s%16s%20s%17s%13s\n", "Size", "t(n)", "t(n)/n", "t(n)/n*log(n)", "t(n)/n^2");
+            printf("%9s%16s%19s%18s%13s\n", "Size", "t(n)", "t(n)/n", "t(n)/n*log(n)", "t(n)/n^2");
         break;
         case 2:
             printf("\nDESCENDING ORDER INITIALIZATION:\n");
-            printf("%8s%16s%20s%17s%13s\n", "Size", "t(n)", "t(n)/n", "t(n)/n*log(n)", "t(n)/n^2");
+            printf("%9s%16s%19s%18s%13s\n", "Size", "t(n)", "t(n)/n", "t(n)/n*log(n)", "t(n)/n^2");
         break;
     }
 }
@@ -400,15 +400,15 @@ void print_row(int a, double totalTime, int n, double *meandivdiff){
     
     if(a == 0){
         //nlog(n)
-        printf("%c   %-5d%15.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/n, totalTime/(n*log(n)), totalTime/(pow(n,2)));
+        printf("%c  %6d%16.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/n, totalTime/(n*log(n)), totalTime/(pow(n,2)));
         *meandivdiff += totalTime/(n*log(n));
     }else if(a == 1){
         //nlog(n)
-        printf("%c   %-5d%15.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/n, totalTime/(n*log(n)), totalTime/(pow(n,2)));
+        printf("%c  %6d%16.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/n, totalTime/(n*log(n)), totalTime/(pow(n,2)));
         *meandivdiff += totalTime/(n*log(n));
     }else{
         //nlog(n)
-        printf("%c   %-5d%15.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/n, totalTime/(n*log(n)), totalTime/(pow(n,2)));
+        printf("%c  %6d%16.3lf%20.6lf%15.6lf%15.6lf\n", asterisk, n, totalTime, totalTime/n, totalTime/(n*log(n)), totalTime/(pow(n,2)));
         *meandivdiff += totalTime/(n*log(n));
     }
 }
@@ -417,6 +417,7 @@ void print_row(int a, double totalTime, int n, double *meandivdiff){
 void test_complexity_heapsort(int rep) {
     int sizes[10] = {500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 128000, 256000};
     printf("===============================\n\n");
+    printf("4. HEAPSORT COMPLEXITY TEST:\n");
     printf("Execution times in microseconds\nRepetitions: %d\n", rep);
 
     double totalTime, meandivdiff;
@@ -454,7 +455,7 @@ void test_complexity_heapsort(int rep) {
             print_row(a, totalTime, n, &meandivdiff);
         }
         //Print average
-        printf("%59.6lf\n", meandivdiff/10);
+        printf("%60.6lf\n", meandivdiff/10);
     }
 }
 
@@ -462,9 +463,9 @@ void test_complexity_heapsort(int rep) {
 
 int main(){
     test_heap();
-    //heapCreationTime(100);
+    heapCreationTime(20);
     test_heapsort();
-    test_complexity_heapsort(100);
+    test_complexity_heapsort(20);
     return 0;
 }
 
