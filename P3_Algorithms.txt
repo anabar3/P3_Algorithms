@@ -1,0 +1,147 @@
+ALGORITHMS PRACTICE 3
+
+STUDENT 1: Javier Carballal Morgade       LOGIN 1: javier.carballal.morgade@udc.es
+STUDENT 2: Diego Martínez Novoa           LOGIN 2: diego.martinez6@udc.es
+STUDENT 3: Ana Barrera Novas              LOGIN 3: ana.barrera@udc.es
+GROUP: 6.1
+DATE: 11/11/23
+
+**********************************************************************************
+
+This practice consists in implementing the code for the data structure heaps and the 
+algorithm HeapSort, and empirically check the complexity of the second.
+
+COMPUTER:
+
+Machine: HP OMEN 15-dc0035ns
+CPU:     Intel® Core™ i7-8750H CPU @ 2.20GHz x 12
+RAM:     15,4 GiB
+SO:      Zorin OS 16.3 x86_64
+Kernel:  5.15.0-84-generic
+
+
+Time unit used in the report: microseconds (μs).
+
+EXERCISES:
+
+Exercise 1 
+
+We began by implementing the data structure. We turn into C code the pseudocode
+given and we created our own functions. Then, we created more functions to test our 
+heap implementation, and we confirmed everything was working as it should.
+
+Exercise 2
+In this exercise we were asked to empirically check that the complexity of the operation
+create_heap is O(n). For it, we reused functions from previous Practicums to make the measurements
+when creating heaps with arrays of increasing size
+
+HEAP CREATION:
+   Size             t(n)          t(n)/n^0.8         t(n)/n     t(n)/n^1.2
+*  500             7.678            0.053222       0.015357       0.004431
+*  1000           18.644            0.074225       0.018644       0.004683
+*  2000           43.888            0.100352       0.021944       0.004799
+*  4000           94.475            0.124071       0.023619       0.004496
+*  8000          222.584            0.167889       0.027823       0.004611
+*  16000         403.346            0.174736       0.025209       0.003637
+   32000         820.090            0.204052       0.025628       0.003219
+   64000        1622.310            0.231841       0.025349       0.002772
+   128000       3277.590            0.269021       0.025606       0.002437
+   256000       6502.240            0.306529       0.025399       0.002105
+                                                   0.023458
+
+An asterisk (*) is used for cases where the time taken by the first measurement is 
+smaller than 500 microseconds, where the method of the measurement is overriden by
+a different one, more precise with small times. The only change is that the time is 
+calculated by repeating the function 1000 times and then dividing in order to get the
+average time. 
+
+Here we can see that the algorithms has, in fact a complexity of O(n). The upper bound has
+descending values, and the lower bound ascending ones. We get a constant value of 0.023458
+in t(n)/n.
+
+We didn't get any anomalous values here, only a bit of inexactitude in the first measurements
+in constant time, due to the fact that small variations in complexity (like constant factors
+or so) are more notorious in small arrays. 
+
+Exercise 3
+For this exercise, we followed exactly the same procedure as in exercise 1 , we
+took the function given, we also reused some other functions from other Practicums, we
+created our own and then we tested them. With everything working, we could move on to the 
+last and more complex exercise.
+
+Exercise 4
+Using the same functions to make the measurements as in exercise 2, we tried to find the complexity
+of the algorithm HeapSort. For it, we ran it against random arrays of increasing sizes and measured the 
+time taken for it to sort them. For more reliability, we made 20 measurements with different random arrays
+for each size and took the average value.
+
+To check the complexity and times depending on the state of the original array, we 
+added two functions to create random arrays already sorted (sorted_init) and in
+descending order (reverse_init).
+
+The same rules form exercise 2 with the asterisk (*) are followed here.
+
+With all of this we could get these results, which we will analyse step by step:
+
+RANDOM INITALIZATION:
+    Size            t(n)              t(n)/n    t(n)/n*log(n)     t(n)/n^2
+*   500           41.286            0.082572       0.013287       0.000165
+*   1000         103.205            0.103205       0.014940       0.000103
+*   2000         258.544            0.129272       0.017007       0.000065
+    4000         576.240            0.144060       0.017369       0.000036
+    8000        1217.060            0.152133       0.016928       0.000019
+    16000       2618.370            0.163648       0.016905       0.000010
+    32000       5455.800            0.170494       0.016436       0.000005
+    64000      11879.430            0.185616       0.016773       0.000003
+    128000     24988.430            0.195222       0.016601       0.000002
+    256000     53640.200            0.209532       0.016826       0.000001
+                                                   0.016307
+
+In the result of the average case we can see that the complexity is O(nlogn), 
+which we found after trying with other cases and adjusting bounds. Bounds (ascending
+and descending values) led us to this case, were we could find a constant value 0.016307
+in t(n)/n*log(n). Just like in the create_heap measurements, we found expected inexactitudes
+in the first arrays because of their size.
+
+
+ASCENDING ORDER INITIALIZATION
+    Size            t(n)              t(n)/n    t(n)/n*log(n)     t(n)/n^2
+*   500           32.767            0.065535       0.010545       0.000131
+*   1000          80.951            0.080951       0.011719       0.000081
+*   2000         198.961            0.099481       0.013088       0.000050
+*   4000         485.959            0.121490       0.014648       0.000030
+    8000         929.230            0.116154       0.012924       0.000015
+    16000       2091.990            0.130749       0.013507       0.000008
+    32000       4088.300            0.127759       0.012316       0.000004
+    64000       8937.160            0.139643       0.012618       0.000002
+    128000     18781.940            0.146734       0.012478       0.000001
+    256000     35942.810            0.140402       0.011275       0.000001
+                                                   0.012512
+
+
+
+DESCENDING ORDER INITIALIZATION:
+    Size            t(n)              t(n)/n    t(n)/n*log(n)     t(n)/n^2
+*   500           45.739            0.091478       0.014720       0.000183
+*   1000         109.483            0.109483       0.015849       0.000109
+*   2000         262.199            0.131099       0.017248       0.000066
+    4000         563.660            0.140915       0.016990       0.000035
+    8000        1216.610            0.152076       0.016921       0.000019
+    16000       2539.360            0.158710       0.016395       0.000010
+    32000       5908.820            0.184651       0.017800       0.000006
+    64000      11726.080            0.183220       0.016556       0.000003
+    128000     23750.910            0.185554       0.015779       0.000001
+    256000     51312.480            0.200439       0.016096       0.000001
+                                                   0.016435
+
+In both ascending and descending cases we also obtained a complexity of O(nlogn), without
+any anomalous values. Lower bounds with increasing values, higher bounds with decreasing 
+ones, constant values 0.012512 and 0.016435 in t(n)/n*log(n)... Everything worked as expected.
+
+
+Conclusion
+In all the tests bounds work as they should, measurements are adecuate and the 
+theoretical complexity of the algorithms create_heap and HeapSort are empirically checked. 
+Taking everything into account, we obtain that this sorting method is a good option for cases
+where we don't want any variability in the complexity depending on the state of the array.
+
